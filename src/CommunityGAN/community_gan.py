@@ -58,13 +58,13 @@ class CommunityGAN(object):
     def build_generator(self):
         """initializing the generator"""
 
-        with tf.compat.v1.variable_scope()("generator"):
+        with tf.compat.v1.variable_scope("generator"):
             self.generator = generator.Generator(self.graph.n_node, self.node_embed_init_g, config)
 
     def build_discriminator(self):
         """initializing the discriminator"""
 
-        with tf.compat.v1.variable_scope()("discriminator"):
+        with tf.compat.v1.variable_scope("discriminator"):
             self.discriminator = discriminator.Discriminator(self.graph.n_node, self.node_embed_init_d, config)
 
     def train(self):

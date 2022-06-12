@@ -8,7 +8,7 @@ class Generator(object):
         self.motif_size = config.motif_size
         self.max_value = config.max_value
 
-        with tf.compat.v1.variable_scope()('generator'):
+        with tf.compat.v1.variable_scope('generator'):
             self.embedding_matrix = tf.get_variable(name="embedding",
                                                     shape=self.node_emd_init.shape,
                                                     initializer=tf.constant_initializer(self.node_emd_init),
