@@ -19,15 +19,19 @@ class CommunityGAN(object):
     def __init__(self):
         for k, v in config.__dict__.items():
             print('%s:\t%s' % (k, str(v)))
-        pickle.dump(config, open(config.cache_filename_prefix + '.config.pkl', 'wb'))
+        pickle.dump(config, open(
+            config.cache_filename_prefix + '.config.pkl', 'wb'))
 
         print("reading graphs...")
         self.graph = graph.Graph(config.motif_size)
         self.graph.load_graph(config.train_filename)
         self.graph.graph_preparation()
-        pickle.dump(self.graph, open(config.cache_filename_prefix + '.graph.pkl', 'wb'))
-        pickle.dump(self.graph.id2nid, open(config.cache_filename_prefix + '.neighbor.pkl', 'wb'))
-        pickle.dump(self.graph.motifs, open(config.cache_filename_prefix + '.motifs.pkl', 'wb'))
+        pickle.dump(self.graph, open(
+            config.cache_filename_prefix + '.graph.pkl', 'wb'))
+        pickle.dump(self.graph.id2nid, open(
+            config.cache_filename_prefix + '.neighbor.pkl', 'wb'))
+        pickle.dump(self.graph.motifs, open(
+            config.cache_filename_prefix + '.motifs.pkl', 'wb'))
         # print(self.graph.n_node)
 
         print("reading initial embeddings...")
@@ -51,7 +55,8 @@ class CommunityGAN(object):
         print('tensorflow initialization')
         self.config = tf.ConfigProto()
         self.config.gpu_options.allow_growth = True
-        self.init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+        self.init_op = tf.group(
+            tf.global_variables_initializer(), tf.local_variables_initializer())
         self.sess = tf.Session(config=self.config)
         self.sess.run(self.init_op)
 
@@ -59,13 +64,15 @@ class CommunityGAN(object):
         """initializing the generator"""
 
         with tf.compat.v1.variable_scope("generator"):
-            self.generator = generator.Generator(self.graph.n_node, self.node_embed_init_g, config)
+            self.generator = generator.Generator(
+                self.graph.n_node, self.node_embed_init_g, config)
 
     def build_discriminator(self):
         """initializing the discriminator"""
 
         with tf.compat.v1.variable_scope("discriminator"):
-            self.discriminator = discriminator.Discriminator(self.graph.n_node, self.node_embed_init_d, config)
+            self.discriminator = discriminator.Discriminator(
+                self.graph.n_node, self.node_embed_init_d, config)
 
     def train(self):
 
@@ -133,7 +140,8 @@ class CommunityGAN(object):
         negs = []
         for i in range(self.graph.n_node):
             if np.random.rand() < config.update_ratio:
-                pos = random.sample(self.graph.id2motifs[i], min(len(self.graph.id2motifs[i]), config.n_sample_dis))
+                pos = random.sample(self.graph.id2motifs[i], min(
+                    len(self.graph.id2motifs[i]), config.n_sample_dis))
                 poss.append(pos)
                 g_s_args.append((i, len(pos), True))
 
@@ -146,8 +154,10 @@ class CommunityGAN(object):
                 labels.extend([0] * len(neg))
 
         motifs, labels = utils.shuffle(motifs, labels)
-        pickle.dump(motifs, open(config.cache_filename_prefix + '.motifs_ford.pkl', 'wb'))
-        pickle.dump(labels, open(config.cache_filename_prefix + '.labels_ford.pkl', 'wb'))
+        pickle.dump(motifs, open(
+            config.cache_filename_prefix + '.motifs_ford.pkl', 'wb'))
+        pickle.dump(labels, open(
+            config.cache_filename_prefix + '.labels_ford.pkl', 'wb'))
         return motifs, labels
 
     def prepare_data_for_g(self):
@@ -171,12 +181,17 @@ class CommunityGAN(object):
 
     def sampling(self, args):
         self.theta_g = self.sess.run(self.generator.embedding_matrix)
-        pickle.dump(args, open(config.cache_filename_prefix + '.args.pkl', 'wb'))
-        pickle.dump(self.theta_g, open(config.cache_filename_prefix + '.theta.pkl', 'wb'))
-        subprocess.call('python sampling.py %s' % (config.cache_filename_prefix + '.config.pkl'), shell=True)
+        pickle.dump(args, open(
+            config.cache_filename_prefix + '.args.pkl', 'wb'))
+        pickle.dump(self.theta_g, open(
+            config.cache_filename_prefix + '.theta.pkl', 'wb'))
+        subprocess.call('python sampling.py %s' % (
+            config.cache_filename_prefix + '.config.pkl'), shell=True)
 
-        motifs = pickle.load(open(config.cache_filename_prefix + '.motifs_sampled.pkl', 'rb'))
-        paths = pickle.load(open(config.cache_filename_prefix + '.paths.pkl', 'rb'))
+        motifs = pickle.load(
+            open(config.cache_filename_prefix + '.motifs_sampled.pkl', 'rb'))
+        paths = pickle.load(
+            open(config.cache_filename_prefix + '.paths.pkl', 'rb'))
         return motifs, paths
 
     def write_embeddings_to_file(self):
@@ -189,7 +204,8 @@ class CommunityGAN(object):
             embedding_str = [self.graph.id2name[idx] + "\t" + "\t".join([str(x) for x in emb]) + "\n"
                              for idx, emb in enumerate(embedding_list)]
             with open(config.emb_filenames[i], "w+") as f:
-                lines = [str(self.graph.n_node) + "\t" + str(config.n_emb) + "\n"] + embedding_str
+                lines = [str(self.graph.n_node) + "\t" +
+                         str(config.n_emb) + "\n"] + embedding_str
                 f.writelines(lines)
 
     @staticmethod
