@@ -14,8 +14,8 @@ class Discriminator(object):
                                                     initializer=tf.constant_initializer(self.node_emd_init),
                                                     trainable=True)
 
-        self.motifs = tf.placeholder(tf.int32, shape=[None, config.motif_size])
-        self.label = tf.placeholder(tf.float32, shape=[None])
+        self.motifs = tf.compat.v1.disable_eager_execution(tf.int32, shape=[None, config.motif_size])
+        self.label = tf.compat.v1.disable_eager_execution(tf.float32, shape=[None])
 
         self.node_embedding = tf.nn.embedding_lookup(self.embedding_matrix, self.motifs)  # Batch * motif_size * embedding_size
         self.score = tf.reduce_sum(tf.reduce_prod(self.node_embedding, axis=1), axis=1)
