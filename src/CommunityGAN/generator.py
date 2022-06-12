@@ -13,7 +13,7 @@ class Generator(object):
                                                     shape=self.node_emd_init.shape,
                                                     initializer=tf.constant_initializer(self.node_emd_init),
                                                     trainable=True)
-
+        tf.compat.v1.disable_eager_execution()
         self.motifs = tf.compat.v1.placeholder(tf.int32, shape=[None, config.motif_size])
         self.reward = tf.compat.v1.placeholder(tf.float32, shape=[None])
 
