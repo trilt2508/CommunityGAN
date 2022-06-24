@@ -31,7 +31,7 @@ class Config():
 
         # application and dataset settings
         self.app = "community_detection"
-        self.dataset = "com-amazon"
+        self.dataset = "comamazon"
         self.update_path()
 
     # change app and dataset
