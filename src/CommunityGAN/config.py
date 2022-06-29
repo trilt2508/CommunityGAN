@@ -25,7 +25,7 @@ class Config():
         self.save_steps = 10
 
         # other hyper-parameters
-        self.n_emb = 100
+        self.n_emb = 5000
         self.num_threads = 16
         self.window_size = 5
 
